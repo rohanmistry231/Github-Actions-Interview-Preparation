@@ -1,0 +1,27 @@
+# Main Learning Points: Restricting Workflow Access
+# Use GitHub Environments and branch protections to control who can trigger workflows.
+
+name: Restrict Workflow Access Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  restricted:
+    runs-on: ubuntu-latest
+    # Use an environment to enforce restrictions
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run a restricted step
+        run: echo "This step runs only after environment restrictions are met"
+
+# To use this workflow:
+# 1. Create an environment named "production" in your repository settings (Settings > Environments)
+# 2. Add branch protection rules (e.g., require specific branches) or required reviewers for the environment
+# 3. Place this file in .github/workflows/restrict-access.yml
+# 4. Push to the main branch to trigger the workflow
+# 5. Check the "Actions" tab to see the workflow run (you may need to approve it if reviewers are required)

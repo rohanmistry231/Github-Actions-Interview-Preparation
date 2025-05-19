@@ -1,0 +1,37 @@
+# Main Learning Points: Secure Dependency Management
+# Use trusted actions and tools to manage dependencies securely and check for vulnerabilities.
+
+name: Secure Dependency Management Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Use a trusted action to set up Node.js and install dependencies
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          # Enable dependency caching for faster builds
+          cache: 'npm'
+
+      # Install dependencies securely
+      - name: Install dependencies
+        run: npm install
+
+      # Audit dependencies for vulnerabilities
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+# To use this workflow:
+# 1. Ensure package.json is in your repository
+# 2. Place this file in .github/workflows/secure-dependencies.yml
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to see the workflow run and audit results

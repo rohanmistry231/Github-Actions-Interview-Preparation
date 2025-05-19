@@ -1,0 +1,37 @@
+# Main Learning Points: GitHub Token Permissions
+# Customize the permissions of the GITHUB_TOKEN to follow the principle of least privilege.
+
+name: GitHub Token Permissions Demo
+
+# Restrict the default GITHUB_TOKEN permissions
+permissions:
+  contents: read  # Only allow reading repository contents
+  issues: none    # No access to issues
+  pull-requests: none  # No access to pull requests
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  token-permissions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # This step should succeed (read access is allowed)
+      - name: Read repository contents
+        run: ls -la
+
+      # This step would fail if it tried to write (e.g., create an issue), but we'll simulate a safe operation
+      - name: Simulate safe operation
+        run: echo "GITHUB_TOKEN has limited permissions: ${{ toJSON(github.token) }}"
+
+# To use this workflow:
+# 1. Place this file in .github/workflows/token-permissions.yml
+# 2. Push to the main branch to trigger the workflow
+# 3. Check the "Actions" tab to see the workflow run
+# 4. Try adding a step that requires write permissions (e.g., creating an issue) to see it fail
