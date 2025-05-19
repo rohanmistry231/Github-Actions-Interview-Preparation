@@ -1,0 +1,36 @@
+# Main Learning Points: Debugging with `act` Locally
+# Use `act` to run GitHub Actions workflows locally for faster debugging.
+
+name: Debug with Act Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+# To debug this workflow locally using `act`:
+# 1. Install `act` on your machine:
+#    - Follow instructions at https://github.com/nektos/act
+#    - Example for macOS/Linux: `curl https://raw.githubusercontent.com/nektos/act/master/install.sh | bash`
+# 2. Ensure Docker is installed and running (act uses Docker to simulate runners)
+# 3. Place this file in .github/workflows/debug-act.yml
+# 4. From your repository's root directory, run:
+#    `act push -j debug`
+# 5. Review the output to debug the workflow locally

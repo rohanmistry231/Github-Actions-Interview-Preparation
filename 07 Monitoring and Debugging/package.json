@@ -1,0 +1,11 @@
+{
+    "name": "monitoring-debugging-demo",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Running tests...\" && exit 0"
+    },
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}

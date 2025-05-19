@@ -1,0 +1,55 @@
+# Main Learning Points: Custom Notifications (Slack, Email)
+# Send notifications to Slack and Email to monitor workflow status.
+
+name: Custom Notifications Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run a step that might fail
+        run: npm install && npm test
+        continue-on-error: true
+
+      # Send a Slack notification
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: 'workflow-notifications'
+          text: 'Workflow failed! Check the run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+
+      # Send an Email notification
+      - name: Notify via Email on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: 'Workflow Failure: ${{ github.workflow }}'
+          body: 'The workflow failed. Check the run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          to: ${{ secrets.EMAIL_RECIPIENT }}
+          from: GitHub Actions <noreply@github.com>
+
+# To use this workflow:
+# 1. Set up GitHub Secrets for SLACK_BOT_TOKEN, EMAIL_USERNAME, EMAIL_PASSWORD, and EMAIL_RECIPIENT
+# 2. For Slack: Create a Slack app, enable incoming webhooks, and add the bot token
+# 3. For Email: Use a Gmail account with an App Password for SMTP access
+# 4. Place this file in .github/workflows/custom-notifications.yml
+# 5. Push to the main branch to trigger the workflow
+# 6. Check Slack and Email for notifications if the workflow fails

@@ -1,0 +1,43 @@
+# Main Learning Points: Workflow Logs
+# Use detailed logging to monitor and debug workflows.
+
+name: Workflow Logs Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Log environment details
+        run: |
+          echo "Runner OS: $RUNNER_OS"
+          echo "Node Version: $(node --version)"
+          echo "Current Directory: $(pwd)"
+
+      - name: Install dependencies with logging
+        run: npm install --verbose
+
+      - name: Run tests with logging
+        run: npm test
+        continue-on-error: true
+
+      - name: Log failure details (if any)
+        if: failure()
+        run: echo "Previous step failed. Check the logs above for details."
+
+# To use this workflow:
+# 1. Ensure package.json is in your repository with a test script
+# 2. Place this file in .github/workflows/workflow-logs.yml
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to view detailed logs for each step

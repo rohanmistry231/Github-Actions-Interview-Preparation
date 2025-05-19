@@ -1,0 +1,41 @@
+# Main Learning Points: Workflow Run Metrics
+# Collect and log metrics like run duration to monitor workflow performance.
+
+name: Workflow Metrics Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Calculate and log duration
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "Workflow duration: $DURATION seconds"
+
+# To use this workflow:
+# 1. Ensure package.json is in your repository with a test script
+# 2. Place this file in .github/workflows/workflow-metrics.yml
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to see the logged duration in the last step
