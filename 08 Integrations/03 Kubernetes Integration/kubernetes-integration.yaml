@@ -1,0 +1,40 @@
+# Main Learning Points: Kubernetes Integration
+# Deploy a container to a Kubernetes cluster using GitHub Actions.
+
+name: Kubernetes Integration Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure Kubernetes credentials
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+          export KUBECONFIG=kubeconfig
+
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f deployment.yml
+
+      - name: Verify deployment
+        run: kubectl get pods
+
+# To use this workflow:
+# 1. Set up GitHub Secret for KUBE_CONFIG (base64-encoded kubeconfig file)
+# 2. Replace DOCKERHUB_USERNAME in deployment.yml with your Docker Hub username
+# 3. Ensure the Docker image is available (e.g., from the Docker Integration workflow)
+# 4. Place this file in .github/workflows/kubernetes-integration.yml
+# 5. Place deployment.yml in your repository
+# 6. Push to the main branch to trigger the workflow
+# 7. Check your Kubernetes cluster to verify the deployment

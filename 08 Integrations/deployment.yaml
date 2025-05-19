@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrations-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: integrations-demo
+  template:
+    metadata:
+      labels:
+        app: integrations-demo
+    spec:
+      containers:
+      - name: integrations-demo
+        image: DOCKERHUB_USERNAME/integrations-demo:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: integrations-demo-service
+spec:
+  selector:
+    app: integrations-demo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

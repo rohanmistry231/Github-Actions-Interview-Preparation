@@ -1,0 +1,51 @@
+# Main Learning Points: Third-Party Tools (Slack, Jira)
+# Integrate with Slack for notifications and Jira for issue updates.
+
+name: Third-Party Tools Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  third-party:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Simulate a failure for notification purposes
+      - name: Run a step that might fail
+        run: exit 1
+        continue-on-error: true
+
+      # Send a Slack notification
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: 'workflow-notifications'
+          text: 'Workflow failed! Check the run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+
+      # Create a Jira issue on failure
+      - name: Create Jira issue on failure
+        if: failure()
+        uses: atlassian/gajira-create@v3
+        with:
+          project: 'DEMO'
+          issuetype: 'Bug'
+          summary: 'Workflow Failure: ${{ github.workflow }}'
+          description: 'The workflow failed. Check the run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+# To use this workflow:
+# 1. Set up GitHub Secrets for SLACK_BOT_TOKEN, JIRA_BASE_URL, JIRA_USER_EMAIL, and JIRA_API_TOKEN
+# 2. For Slack: Create a Slack app, enable incoming webhooks, and add the bot token
+# 3. For Jira: Ensure the project 'DEMO' exists and the user has permissions to create issues
+# 4. Place this file in .github/workflows/third-party-tools.yml
+# 5. Push to the main branch to trigger the workflow
+# 6. Check Slack and Jira for notifications and issues

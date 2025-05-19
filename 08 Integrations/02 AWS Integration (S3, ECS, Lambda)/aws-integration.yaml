@@ -1,0 +1,89 @@
+# Main Learning Points: AWS Integration (S3, ECS, Lambda)
+# Integrate GitHub Actions with AWS services for storage, container deployment, and serverless functions.
+
+name: AWS Integration Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  s3-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload to S3
+        run: aws s3 cp app.js s3://my-integrations-bucket/app.js
+
+  ecs-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          ECR_REPOSITORY: integrations-demo
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          service: integrations-demo-service
+          cluster: integrations-demo-cluster
+          wait-for-service-stability: true
+
+  lambda-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Package Lambda function
+        run: |
+          zip -r function.zip app.js package.json node_modules
+          npm install
+
+      - name: Update Lambda function
+        run: aws lambda update-function-code --function-name integrations-demo-lambda --zip-file fileb://function.zip
+
+# To use this workflow:
+# 1. Set up GitHub Secrets for AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and ECR_REGISTRY
+# 2. For S3: Create a bucket named my-integrations-bucket
+# 3. For ECS: Set up an ECS cluster, service, and task definition (task-definition.json)
+# 4. For Lambda: Create a Lambda function named integrations-demo-lambda
+# 5. Ensure app.js, Dockerfile, and package.json are in your repository
+# 6. Place this file in .github/workflows/aws-integration.yml
+# 7. Push to the main branch to trigger the workflow
+# 8. Check AWS services to verify the integrations
