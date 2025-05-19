@@ -1,0 +1,36 @@
+# Main Learning Points: Using Marketplace Actions
+# Marketplace actions are reusable units of code shared by the community.
+# Example: Using actions/checkout to clone the repository.
+
+name: Marketplace Action Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  use-marketplace-action:
+    runs-on: ubuntu-latest
+    steps:
+      # Using a marketplace action to checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Verify the checkout by listing files
+      - name: List files
+        run: ls -la
+
+      # Using another marketplace action: actions/setup-node to set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Verify Node.js setup
+      - name: Check Node.js version
+        run: node --version
+
+# To use this workflow:
+# 1. Place this file in .github/workflows/marketplace-action.yml
+# 2. Push to the main branch to trigger the workflow
+# 3. Check the "Actions" tab in your GitHub repository to see the workflow run

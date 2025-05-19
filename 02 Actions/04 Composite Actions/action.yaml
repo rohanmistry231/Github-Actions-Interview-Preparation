@@ -1,0 +1,16 @@
+# Main Learning Points: Composite Actions
+# Composite actions combine multiple steps into a single reusable action.
+
+name: 'Composite Greeting Action'
+description: 'A composite action that checks out code and prints a greeting'
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Print greeting
+      run: echo "Hello from composite action!"
+      shell: bash
+
+# Place this file in a directory (e.g., .github/actions/composite-greeting/action.yml)

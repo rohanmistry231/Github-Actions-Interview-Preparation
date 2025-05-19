@@ -1,0 +1,18 @@
+# Main Learning Points: Action Inputs and Outputs
+# Actions can accept inputs and produce outputs for use in workflows.
+
+name: 'Greeting with Inputs and Outputs'
+description: 'An action that takes a name as input and outputs a greeting'
+inputs:
+  name:
+    description: 'The name to greet'
+    required: true
+    default: 'User'
+outputs:
+  greeting:
+    description: 'The generated greeting message'
+runs:
+  using: 'node16'
+  main: 'main.js'
+
+# Place this file in a directory (e.g., .github/actions/greeting-io/action.yml)

@@ -1,0 +1,31 @@
+# Main Learning Points: Using an Action with Inputs and Outputs
+# This workflow uses the custom action defined above.
+
+name: Inputs and Outputs Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  use-io-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use custom action with inputs and outputs
+        id: greet
+        uses: ./.github/actions/greeting-io
+        with:
+          name: 'Alice'
+
+      - name: Print the output
+        run: echo "Greeting from action: ${{ steps.greet.outputs.greeting }}"
+
+# To use this workflow:
+# 1. Create a directory .github/actions/greeting-io in your repository
+# 2. Place the action.yml and main.js files in that directory
+# 3. Place this file in .github/workflows/use-io-action.yml
+# 4. Push to the main branch to trigger the workflow
+# 5. Check the "Actions" tab to see the workflow run

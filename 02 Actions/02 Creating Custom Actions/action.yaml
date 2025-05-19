@@ -1,0 +1,13 @@
+# Main Learning Points: Creating Custom Actions
+# Custom actions allow you to encapsulate reusable logic.
+# This is a Docker-based action that prints a greeting.
+
+name: 'Custom Greeting Action'
+description: 'A simple action to print a greeting message'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - 'Hello, GitHub Actions!'
+
+# Place this file in a directory (e.g., .github/actions/custom-greeting/action.yml)

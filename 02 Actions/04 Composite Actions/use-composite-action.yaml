@@ -1,0 +1,25 @@
+# Main Learning Points: Using a Composite Action
+# This workflow uses the composite action defined above.
+
+name: Composite Action Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  use-composite-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use composite action
+        uses: ./.github/actions/composite-greeting
+
+      - name: Verify files after checkout
+        run: ls -la
+
+# To use this workflow:
+# 1. Create a directory .github/actions/composite-greeting in your repository
+# 2. Place the action.yml file in that directory
+# 3. Place this file in .github/workflows/use-composite-action.yml
+# 4. Push to the main branch to trigger the workflow
+# 5. Check the "Actions" tab to see the workflow run
