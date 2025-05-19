@@ -1,0 +1,20 @@
+# Main Learning Points: Reusable Workflows (Caller)
+# Call a reusable workflow to avoid duplicating logic.
+
+name: Call Reusable Workflow Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  call-test:
+    uses: ./.github/workflows/test-workflow.yml
+    with:
+      node-version: '18'
+
+# To use this workflow:
+# 1. Ensure package.json is in your repository with a test script
+# 2. Place both this file and test-workflow.yml in .github/workflows/
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to see the workflow run

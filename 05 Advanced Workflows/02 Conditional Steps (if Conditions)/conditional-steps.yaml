@@ -1,0 +1,31 @@
+# Main Learning Points: Conditional Steps (if Conditions)
+# Use 'if' conditions to control when steps run based on certain criteria.
+
+name: Conditional Steps Demo
+
+on:
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  conditional:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Step for main branch only
+        if: github.ref == 'refs/heads/main'
+        run: echo "This step runs only on the main branch"
+
+      - name: Step for develop branch only
+        if: github.ref == 'refs/heads/develop'
+        run: echo "This step runs only on the develop branch"
+
+      - name: Always run this step
+        run: echo "This step runs on all branches"
+
+# To use this workflow:
+# 1. Place this file in .github/workflows/conditional-steps.yml
+# 2. Push to the main or develop branch to trigger the workflow
+# 3. Check the "Actions" tab to see which steps ran based on the branch

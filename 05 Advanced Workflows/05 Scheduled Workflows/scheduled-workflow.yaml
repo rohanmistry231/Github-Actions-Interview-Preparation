@@ -1,0 +1,26 @@
+# Main Learning Points: Scheduled Workflows
+# Schedule workflows to run at specific times using cron syntax.
+
+name: Scheduled Workflow Demo
+
+on:
+  schedule:
+    # Run daily at 10:00 PM IST (16:30 UTC)
+    # Current time: 09:10 PM IST on May 18, 2025
+    # IST is UTC+5:30, so 10:00 PM IST = 16:30 UTC
+    - cron: '30 16 * * *'
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run a scheduled task
+        run: echo "This workflow ran on $(date)"
+
+# To use this workflow:
+# 1. Place this file in .github/workflows/scheduled-workflow.yml
+# 2. The workflow will run daily at 10:00 PM IST (16:30 UTC)
+# 3. Check the "Actions" tab to see the scheduled runs

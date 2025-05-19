@@ -1,0 +1,36 @@
+# Main Learning Points: Matrix Builds
+# Matrix builds allow running jobs across multiple configurations (e.g., different OS or versions).
+
+name: Matrix Builds Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [16, 18, 20]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+# To use this workflow:
+# 1. Ensure package.json is in your repository with a test script
+# 2. Place this file in .github/workflows/matrix-builds.yml
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to see the matrix jobs run
