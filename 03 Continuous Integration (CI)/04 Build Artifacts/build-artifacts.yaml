@@ -1,0 +1,41 @@
+# Main Learning Points: Build Artifacts
+# Artifacts are files generated during a workflow (e.g., build outputs).
+
+name: Build Artifacts Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create a build directory
+        run: |
+          mkdir build
+          cp app.js build/
+          echo "Build completed at $(date)" > build/build-info.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: build/
+
+# To use this workflow:
+# 1. Ensure app.js is in your repository
+# 2. Place this file in .github/workflows/build-artifacts.yml
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to download the artifact after the workflow runs

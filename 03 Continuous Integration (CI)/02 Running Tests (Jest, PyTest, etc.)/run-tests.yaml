@@ -1,0 +1,51 @@
+# Main Learning Points: Running Tests (Jest, PyTest, etc.)
+# Automate testing for different languages in a CI pipeline.
+
+name: Run Tests Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install jest --save-dev
+
+      - name: Run Jest tests
+        run: npx jest app.test.js
+
+  test-python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run PyTest
+        run: pytest --version  # Placeholder; replace with actual test command if Python tests are added
+
+# To use this workflow:
+# 1. Ensure app.js and app.test.js are in your repository for Jest tests
+# 2. Ensure requirements.txt is in your repository for PyTest
+# 3. Add Python test files if needed for PyTest
+# 4. Place this file in .github/workflows/run-tests.yml
+# 5. Push to the main branch to trigger the workflow
+# 6. Check the "Actions" tab to see the workflow run

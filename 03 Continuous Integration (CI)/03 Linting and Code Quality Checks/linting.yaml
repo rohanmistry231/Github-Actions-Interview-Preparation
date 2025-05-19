@@ -1,0 +1,33 @@
+# Main Learning Points: Linting and Code Quality Checks
+# Linting ensures code quality and consistency.
+
+name: Linting Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install eslint --save-dev
+
+      - name: Run ESLint
+        run: npx eslint app.js
+
+# To use this workflow:
+# 1. Ensure app.js is in your repository
+# 2. Optionally, add an ESLint config file (.eslintrc.json) for custom rules
+# 3. Place this file in .github/workflows/linting.yml
+# 4. Push to the main branch to trigger the workflow
+# 5. Check the "Actions" tab to see the workflow run
