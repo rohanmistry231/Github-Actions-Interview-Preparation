@@ -1,0 +1,41 @@
+# Main Learning Points: Deployment Approvals
+# Use GitHub Environments to enforce manual approvals before deployment.
+
+name: Deployment Approvals Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: echo "Build completed"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy (placeholder)
+        run: echo "Deploying to production after approval"
+
+# To use this workflow:
+# 1. Set up an environment named "production" in your repository settings
+# 2. Add required reviewers for the "production" environment
+# 3. Place this file in .github/workflows/deploy-approvals.yml
+# 4. Push to the main branch to trigger the workflow
+# 5. Approve the deployment in the "Actions" tab to proceed

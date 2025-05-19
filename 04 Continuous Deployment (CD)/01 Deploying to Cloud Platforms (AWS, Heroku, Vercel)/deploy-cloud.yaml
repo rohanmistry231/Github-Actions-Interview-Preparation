@@ -1,0 +1,63 @@
+# Main Learning Points: Deploying to Cloud Platforms (AWS, Heroku, Vercel)
+# Automate deployment to cloud platforms using GitHub Actions.
+
+name: Deploy to Cloud Platforms
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy-aws:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to AWS Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: cd-demo-app
+          environment_name: cd-demo-env
+          version_label: ${{ github.sha }}
+          region: us-east-1
+          deployment_package: .
+
+  deploy-heroku:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: cd-demo-app
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+
+  deploy-vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel_token: ${{ secrets.VERCEL_TOKEN }}
+          vercel_project_id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+# To use this workflow:
+# 1. Set up GitHub Secrets for AWS, Heroku, and Vercel credentials
+# 2. Ensure app.js and package.json are in your repository
+# 3. For AWS: Create an Elastic Beanstalk application and environment
+# 4. For Heroku: Create a Heroku app and a Procfile (web: node app.js)
+# 5. For Vercel: Create a Vercel project and add vercel.json if needed
+# 6. Place this file in .github/workflows/deploy-cloud.yml
+# 7. Push to the main branch to trigger the workflow
+# 8. Check the "Actions" tab to see the deployment
