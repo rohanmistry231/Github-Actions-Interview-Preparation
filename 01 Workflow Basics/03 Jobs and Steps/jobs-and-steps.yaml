@@ -1,0 +1,44 @@
+# Main Learning Points: Jobs and Steps
+# Jobs are independent tasks that run in parallel (unless specified).
+# Steps are the individual actions within a job.
+
+name: Jobs and Steps Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # First job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+        # Assuming a Node.js project for demo purposes
+
+      - name: Run build
+        run: npm run build
+
+  # Second job, dependent on the first
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+# To use this workflow:
+# 1. Place this file in .github/workflows/jobs-and-steps.yml
+# 2. Ensure you have a Node.js project with package.json and scripts for "build" and "test"
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to see the workflow run

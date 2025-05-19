@@ -1,0 +1,37 @@
+# Main Learning Points: Runners (Hosted vs. Self-Hosted)
+# Runners execute workflows; GitHub provides hosted runners, or you can set up self-hosted runners.
+
+name: Runners Demo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  hosted-runner:
+    # Using a GitHub-hosted runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run on hosted runner
+        run: echo "Running on GitHub-hosted runner (Ubuntu)"
+
+  self-hosted-runner:
+    # Using a self-hosted runner (requires setup in your repository)
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run on self-hosted runner
+        run: echo "Running on self-hosted runner"
+
+# To use this workflow:
+# 1. Place this file in .github/workflows/runners.yml
+# 2. For self-hosted runner: Set up a self-hosted runner in your repository settings
+#   - Go to Settings > Actions > Runners > Add runner
+#   - Follow instructions to set up the runner on your machine
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab to see the workflow run

@@ -1,0 +1,44 @@
+# Main Learning Points: Workflow Triggers (on Events)
+# The 'on' keyword defines events that trigger the workflow.
+
+name: Workflow Triggers Demo
+
+# Multiple trigger events
+on:
+  # Trigger on push to specific branches
+  push:
+    branches: [ main, develop ]
+  
+  # Trigger on pull requests targeting specific branches
+  pull_request:
+    branches: [ main ]
+  
+  # Trigger on a schedule (every day at 12:00 UTC)
+  schedule:
+    - cron: '0 12 * * *'
+  
+  # Trigger manually via the GitHub UI
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'A custom message to print'
+        required: true
+        default: 'Hello from workflow_dispatch!'
+
+jobs:
+  trigger-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Print trigger message
+        run: echo "Workflow triggered! Message: ${{ github.event.inputs.message || 'Default message' }}"
+  
+      - name: Print event details
+        run: echo "Event name: ${{ github.event_name }}"
+
+# To use this workflow:
+# 1. Place this file in .github/workflows/workflow-triggers.yml
+# 2. Push to main or develop, create a pull request, or trigger manually
+# 3. Check the "Actions" tab to see the workflow run

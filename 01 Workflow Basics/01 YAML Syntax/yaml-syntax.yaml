@@ -1,0 +1,39 @@
+# Main Learning Points: YAML Syntax
+# YAML is the format used to define GitHub Actions workflows.
+# Key elements include key-value pairs, lists, and nested structures.
+
+# Workflow name
+name: YAML Syntax Demo
+
+# Trigger the workflow on push to the main branch
+on:
+  push:
+    branches: [ main ]
+
+# Define jobs
+jobs:
+  demo-job:
+    # Specify the runner
+    runs-on: ubuntu-latest
+
+    # Define steps
+    steps:
+      # A step with a name and a command
+      - name: Print a message
+        run: echo "Hello, GitHub Actions!"
+
+      # A step using an action from the marketplace
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # A step with environment variables
+      - name: Run with environment variables
+        run: echo "The value of MY_VAR is $MY_VAR"
+        env:
+          MY_VAR: "Hello World"
+
+# To use this workflow:
+# 1. Create a repository on GitHub
+# 2. Place this file in .github/workflows/yaml-syntax.yml
+# 3. Push to the main branch to trigger the workflow
+# 4. Check the "Actions" tab in your repository to see the workflow run
